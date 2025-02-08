@@ -1,0 +1,21 @@
+{
+  "name": "Chromia",
+  "version": "0.0.1",
+  "description": "An engine for the everything",
+  "main": "dist/index.js",
+  "repository": "https://github.com/SufremOak/Chromia.git",
+  "author": "SufremOak <migsufrem@gmail.com>",
+  "license": "LGPL",
+  "private": false,
+  "dependencies": {
+    "coffeescript": "^2.7.0",
+    "express": "^4.21.2",
+    "gulp": "^5.0.0",
+    "postcss": "^8.5.1",
+    "postcss-js": "^4.0.1",
+    "sass": "^1.84.0",
+    "tailwindcss": "^4.0.4",
+    "typescript": "^5.7.3",
+    "webpack": "^5.97.1"
+  }
+}
