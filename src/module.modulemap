@@ -1,0 +1,4 @@
+module Stuff {
+    header "Stuff.h"
+    export *
+}

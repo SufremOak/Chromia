@@ -4,6 +4,10 @@
   "description": "An engine for the everything",
   "main": "dist/index.js",
   "repository": "https://github.com/SufremOak/Chromia.git",
+  "scripts": {
+    "test": "tsc && node dist/index.js",
+    "pack": "tsc && pkg ./dist/index.js ./dist/web.html ./dist/env.sh"
+  },
   "author": "SufremOak <migsufrem@gmail.com>",
   "license": "LGPL",
   "private": false,
