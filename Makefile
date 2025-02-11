@@ -1,0 +1,3 @@
+CC=gcc
+AUTOCOMP=make
+SRCS=
