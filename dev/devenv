@@ -1,0 +1,150 @@
+#!/bin/bash
+
+# Function to check if a command exists
+command_exists() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+# List of required commands
+commands=("g++" "gcc" "python3" "cython" "make" "cmake")
+
+# Check each command
+for cmd in "${commands[@]}"; do
+    if command_exists "$cmd"; then
+        echo "$cmd is installed"
+    else
+        echo "$cmd is not installed"
+    fi
+done
+
+# Check the type of OS
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    echo "The operating system is Linux"
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    echo "The operating system is macOS"
+elif [[ "$OSTYPE" == "cygwin" ]]; then
+    echo "The operating system is Cygwin (POSIX compatibility layer and Linux environment emulation for Windows)"
+elif [[ "$OSTYPE" == "msys" ]]; then
+    echo "The operating system is MSYS (Lightweight shell and GNU utilities compiled for Windows)"
+elif [[ "$OSTYPE" == "win32" ]]; then
+    echo "The operating system is Windows"
+else
+    echo "Unknown operating system"
+fi
+
+# Check the type of shell
+if [[ "$SHELL" == *"/bash" ]]; then
+    echo "The shell is Bash"
+elif [[ "$SHELL" == *"/zsh" ]]; then
+    echo "The shell is Zsh"
+else
+    echo "Unknown shell"
+fi
+
+# Check if the current user is root
+if [[ $EUID -eq 0 ]]; then
+    echo "You are running as root"
+else
+    echo "You are not running as root"
+fi
+
+# Check if ncurses is installed
+if command_exists "ncurses"; then
+    echo "ncurses is installed"
+else
+    echo "ncurses is not installed"
+fi
+
+# Check if libobjc++ is installed
+if command_exists "libobjc++"; then
+    echo "libobjc++ is installed"
+else
+    echo "libobjc++ is not installed"
+fi
+
+# Check if libstdc++ is installed
+if command_exists "libstdc++"; then
+    echo "libstdc++ is installed"
+else
+    echo "libstdc++ is not installed"
+fi
+
+# Check if libgcc is installed
+if command_exists "libgcc"; then
+    echo "libgcc is installed"
+else
+    echo "libgcc is not installed"
+fi
+
+# Check the size of the host's RAM
+ram=$(grep MemTotal /proc/meminfo | awk '{print $2}')
+ram_gb=$(echo "scale=2; $ram / 1024 / 1024" | bc)
+echo "The host has $ram_gb GB of RAM"
+
+# Check the number of CPU cores
+cpu_cores=$(nproc)
+echo "The host has $cpu_cores CPU cores"
+
+# Check the kernel version
+kernel_version=$(uname -r)
+echo "The kernel version is $kernel_version"
+
+# Check the distribution name
+if command_exists "lsb_release"; then
+    distro_name=$(lsb_release -si)
+    echo "The distribution name is $distro_name"
+else
+    echo "lsb_release is not installed"
+fi
+
+# Check if /usr/local/include/Fromia exists
+if [ -d "/usr/local/include/Fromia" ]; then
+    echo "/usr/local/include/Fromia exists"
+else
+    echo "/usr/local/include/Fromia does not exist"
+fi
+
+# Check if /usr/local/lib/Fromia exists
+if [ -d "/usr/local/lib/Fromia" ]; then
+    echo "/usr/local/lib/Fromia exists"
+else
+    echo "/usr/local/lib/Fromia does not exist"
+fi
+
+# create python dev environment
+python3 -m venv dev
+source dev/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# create base runtime environment
+mkdir chromia
+mkdir chromia/src
+
+touch chromia/Makefile
+touch chromia/README.md
+touch chromia/LICENSE
+mkdir chromia/lib
+wget https://raw.githubusercontent.com/SufremOak/Chromia/templates/main0/main.pyx -O chromia/main.pyx
+wget https://raw.githubusercontent.com/SufremOak/Chromia/templates/main0/setup.py -O chromia/setup.py
+wget https://raw.githubusercontent.com/SufremOak/Chromia/templates/main0/requirements.txt -O chromia/requirements.txt
+wget https://raw.githubusercontent.com/SufremOak/Chromia/templates/main0/.gitignore -O chromia/.gitignore
+wget https://raw.githubusercontent.com/SufremOak/Chromia/templates/main0/src/runtime.cpp -O chromia/src/runtime.cpp
+wget https://raw.githubusercontent.com/SufremOak/Chromia/templates/main0/src/runtime.h -O chromia/src/runtime.h
+wget https://raw.githubusercontent.com/SufremOak/Chromia/templates/main0/src/Makefile -O chromia/src/Makefile
+wget https://raw.githubusercontent.com/SufremOak/Chromia/templates/main0/src/NSChromia.mm -O chromia/src/NSChromia.mm
+wget https://raw.githubusercontent.com/SufremOak/Chromia/templates/main0/src/NSChromia.h -O chromia/src/NSChromia.h
+wget https://raw.githubusercontent.com/SufremOak/Chromia/templates/main0/src/Chromia.cpp -O chromia/src/Chromia.cpp
+wget https://raw.githubusercontent.com/SufremOak/Chromia/templates/main0/src/Chromia.h -O chromia/src/Chromia.h
+wget https://raw.githubusercontent.com/SufremOak/Chromia/templates/main0/src/csh.mm -O chromia/src/csh.mm
+wget https://raw.githubusercontent.com/SufremOak/Fromia/refs/heads/main/clibs/Foundation.h -0 chromia/src/Foundation.h
+wget https://raw.githubusercontent.com/SufremOak/Fromia/refs/heads/main/clibs/fromia.h -O chromia/lib/fromia.h
+
+# Ask for a runtime name
+read -p "Enter the runtime name: " runtime_name
+
+# Copy all files in ./chromia to ~/(runtime name)
+cp -r chromia/* "$HOME/$runtime_name"
+cp -r ../lib/libNSModules.so "$HOME/$runtime_name/lib"
+
+echo "Files have been copied to $HOME/$runtime_name"
